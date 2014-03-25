@@ -27,18 +27,18 @@ var util = require('./utils');
 // If no URL passed it defaults to the current domain.
 //
 //     // init a new hoodie instance
-//     hoodie = new Hoodie
+//     var hoodie = new Hoodie();
 //
-function Hoodie(baseUrl) {
-  var hoodie = this;
+function Hoodie (baseUrl) {
+  var self = this;
 
   // enforce initialization with `new`
-  if (!(hoodie instanceof Hoodie)) {
-    throw new Error('usage: new Hoodie(url);');
+  if (!(self instanceof Hoodie)) {
+    new Error('usage: new Hoodie(url);');
   }
 
   // remove trailing slashes
-  hoodie.baseUrl = baseUrl ? baseUrl.replace(/\/+$/, '') : '';
+  self.baseUrl = baseUrl ? baseUrl.replace(/\/+$/, '') : '';
 
 
   // hoodie.extend
@@ -46,10 +46,10 @@ function Hoodie(baseUrl) {
 
   // extend hoodie instance:
   //
-  //     hoodie.extend(function(hoodie) {} )
+  //  hoodie.extend(function (hoodie) {} );
   //
-  hoodie.extend = function extend(extension) {
-    extension(hoodie);
+  self.extend = function extend (extension) {
+    extension(self);
   };
 
 
@@ -63,38 +63,38 @@ function Hoodie(baseUrl) {
   // * hoodie.trigger
   // * hoodie.unbind
   // * hoodie.off
-  hoodie.extend(hoodieEvents);
+  self.extend(hoodieEvents);
 
   // * hoodie.isOnline
   // * hoodie.checkConnection
-  hoodie.extend(hoodieConnection);
+  self.extend(hoodieConnection);
 
   // * hoodie.open
-  hoodie.extend(hoodieOpen);
+  self.extend(hoodieOpen);
 
   // * hoodie.store
-  hoodie.extend(hoodieLocalStore);
+  self.extend(hoodieLocalStore);
 
   // workaround, until we ship https://github.com/hoodiehq/hoodie.js/issues/199
-  hoodie.store.patchIfNotPersistant();
+  self.store.patchIfNotPersistant();
 
   // * hoodie.task
-  hoodie.extend(hoodieTask);
+  self.extend(hoodieTask);
 
   // * hoodie.config
-  hoodie.extend(hoodieConfig);
+  self.extend(hoodieConfig);
 
   // * hoodie.account
-  hoodie.extend(hoodieAccount);
+  self.extend(hoodieAccount);
 
   // * hoodie.remote
-  hoodie.extend(hoodieAccountRemote);
+  self.extend(hoodieAccountRemote);
 
   // * hoodie.id
-  hoodie.extend(hoodieId);
+  self.extend(hoodieId);
 
   // * hoodie.request
-  hoodie.extend(hoodieRequest);
+  self.extend(hoodieRequest);
 
 
   //
@@ -102,54 +102,54 @@ function Hoodie(baseUrl) {
   //
 
   // init config
-  hoodie.config.init();
+  self.config.init();
 
   // init hoodieId
-  hoodie.id.init();
+  self.id.init();
 
   // set username from config (local store)
-  hoodie.account.username = hoodie.config.get('_account.username');
+  self.account.username = self.config.get('_account.username');
 
   // init hoodie.remote API
-  hoodie.remote.init();
+  self.remote.init();
 
   // check for pending password reset
-  hoodie.account.checkPasswordReset();
+  self.account.checkPasswordReset();
 
   // hoodie.id
-  hoodie.id.subscribeToOutsideEvents();
+  self.id.subscribeToOutsideEvents();
 
   // hoodie.config
-  hoodie.config.subscribeToOutsideEvents();
+  self.config.subscribeToOutsideEvents();
 
   // hoodie.store
-  hoodie.store.subscribeToOutsideEvents();
-  hoodie.store.bootstrapDirtyObjects();
+  self.store.subscribeToOutsideEvents();
+  self.store.bootstrapDirtyObjects();
 
   // hoodie.remote
-  hoodie.remote.subscribeToOutsideEvents();
+  self.remote.subscribeToOutsideEvents();
 
   // hoodie.task
-  hoodie.task.subscribeToOutsideEvents();
+  self.task.subscribeToOutsideEvents();
 
   // authenticate
   // we use a closure to not pass the username to connect, as it
   // would set the name of the remote store, which is not the username.
-  hoodie.account.authenticate().then(function( /* username */ ) {
-    hoodie.remote.connect();
+  self.account.authenticate().then(function( /* username */ ) {
+    self.remote.connect();
   });
 
   // check connection when browser goes online / offline
-  global.addEventListener('online', hoodie.checkConnection, false);
-  global.addEventListener('offline', hoodie.checkConnection, false);
+  global.addEventListener('online', self.checkConnection, false);
+  global.addEventListener('offline', self.checkConnection, false);
 
   // start checking connection
-  hoodie.checkConnection();
+  self.checkConnection();
 
   //
   // loading user extensions
   //
-  applyExtensions(hoodie);
+  applyExtensions(self);
 }
 
 // Extending hoodie
@@ -157,21 +157,22 @@ function Hoodie(baseUrl) {
 
 // You can extend the Hoodie class like so:
 //
-// Hoodie.extend(funcion(hoodie) { hoodie.myMagic = function() {} })
+// Hoodie.extend(function (hoodie) { hoodie.customMethod = function() {} });
 //
 var extensions = [];
 
-Hoodie.extend = function(extension) {
+Hoodie.extend = function (extension) {
   extensions.push(extension);
 };
 
 //
 // detect available extensions and attach to Hoodie Object.
 //
-function applyExtensions(hoodie) {
+function applyExtensions (self) {
   for (var i = 0; i < extensions.length; i++) {
-    extensions[i](hoodie, lib, util);
+    extensions[i].call(self, [lib, util]);
   }
 }
 
 module.exports = Hoodie;
+
