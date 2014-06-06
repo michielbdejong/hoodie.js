@@ -692,8 +692,8 @@ function hoodieAccount(hoodie) {
   //         'authToken': 'dXNlci2Mjow9N2Rh2WyZfioB1ubEsc5n9taWNoaWVsMjo1MzkxOEQKpdFA'
   //     }
   //
-  // we want to turn it into 'test1', 'mvu85hy', 'DEADBEEF' or reject the promise
-  // in case an error occurred ('roles' array contains 'error' or is empty)
+  // we want to turn it into 'test1', 'mvu85hy', 'dXNlci2Mjow9N2Rh2WyZfioB1ubEsc5n9taWNoaWVsMjo1MzkxOEQKpdFA'
+  // or reject the promise in case an error occurred ('roles' array contains 'error' or is empty)
   //
   function handleSignInSuccess(options) {
     options = options || {};
