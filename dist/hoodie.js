@@ -394,8 +394,10 @@ function hoodieAccount(hoodie) {
     }
 
     return sendSignUpRequest(username, password)
-    .done(function() {
+    .done(function(newUsername, newHoodieId, newAuthToken) {
+      console.log('sign-in after signUp done', arguments);
       setUsername(username);
+      setAuthToken(newAuthToken);
       account.trigger('signup', username);
     });
   };
@@ -911,7 +913,9 @@ function hoodieAccount(hoodie) {
       defer = getDefer();
     }
 
+    console.log('setting timeout');
     global.setTimeout(function() {
+      console.log('timeout fired');
       var promise = sendSignInRequest(username, password, options);
       promise.done(defer.resolve);
       promise.fail(function(error) {
@@ -948,9 +952,11 @@ function hoodieAccount(hoodie) {
   // or reject the promise in case an error occurred ('roles' array contains 'error' or is empty)
   //
   function handleSignInSuccess(options) {
+    console.log('handleSignInSuccess creates handler with options', options);
     options = options || {};
 
     return function(response) {
+      console.log('got response', response);
       var newUsername;
       var newHoodieId;
       var newAuthToken;
@@ -995,6 +1001,7 @@ function hoodieAccount(hoodie) {
       authenticated = true;
 
       account.fetch();
+      console.log('returning resolveWith', newUsername, newHoodieId, newAuthToken, options);
       return resolveWith(newUsername, newHoodieId, newAuthToken, options);
     };
   }
@@ -1400,6 +1407,7 @@ function hoodieAccount(hoodie) {
   // the same.
   //
   function sendSignInRequest(username, password, options) {
+    console.log('sendSignInRequest', username, password, options);
     var requestOptions = {
       data: {
         name: userTypeAndId(username),
@@ -1896,7 +1904,6 @@ function hoodieRequest(hoodie) {
     }
 
     defaults.url = url;
-
     if (hoodie.account.authToken) {
       defaults.headers = {
         Authorization: 'Bearer ' + hoodie.account.authToken

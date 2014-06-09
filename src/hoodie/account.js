@@ -142,8 +142,9 @@ function hoodieAccount(hoodie) {
     }
 
     return sendSignUpRequest(username, password)
-    .done(function() {
+    .done(function(newUsername, newHoodieId, newAuthToken) {
       setUsername(username);
+      setAuthToken(newAuthToken);
       account.trigger('signup', username);
     });
   };
