@@ -62,7 +62,7 @@ function hoodieRequest(hoodie) {
     }
 
     defaults.url = url;
-
+    console.log('checking for authToken', hoodie.account);
     if (hoodie.account.authToken) {
       defaults.headers = {
         Authorization: 'Bearer ' + hoodie.account.authToken

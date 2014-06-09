@@ -521,7 +521,7 @@ function hoodieAccount(hoodie) {
       promise.done(disconnect);
     }
 
-    return promise.done( function(newUsername, newHoodieId) {
+    return promise.done( function(newUsername, newHoodieId, newAuthToken) {
       if (options.moveData) {
         if (!isSilent) {
           account.trigger('movedata');
@@ -530,6 +530,7 @@ function hoodieAccount(hoodie) {
       if (! isReauthenticating) {
         cleanup();
       }
+      setAuthToken(newAuthToken);
       if (isReauthenticating) {
         if (!isSilent) {
           account.trigger('reauthenticated', newUsername);
@@ -816,6 +817,15 @@ function hoodieAccount(hoodie) {
     return config.set('_account.username', newUsername);
   }
 
+  function setAuthToken(newAuthToken) {
+    if (account.authToken === newAuthToken) {
+      return;
+    }
+
+    account.authToken = newAuthToken;
+    return config.set('_account.authToken', newAuthToken);
+  }
+
 
   //
   // handle a successful authentication request.
@@ -930,11 +940,12 @@ function hoodieAccount(hoodie) {
   //         'roles': [
   //             'mvu85hy',
   //             'confirmed'
-  //         ]
+  //         ],
+  //         'authToken': 'dXNlci2Mjow9N2Rh2WyZfioB1ubEsc5n9taWNoaWVsMjo1MzkxOEQKpdFA'
   //     }
   //
-  // we want to turn it into 'test1', 'mvu85hy' or reject the promise
-  // in case an error occurred ('roles' array contains 'error' or is empty)
+  // we want to turn it into 'test1', 'mvu85hy', 'dXNlci2Mjow9N2Rh2WyZfioB1ubEsc5n9taWNoaWVsMjo1MzkxOEQKpdFA'
+  // or reject the promise in case an error occurred ('roles' array contains 'error' or is empty)
   //
   function handleSignInSuccess(options) {
     options = options || {};
@@ -942,9 +953,11 @@ function hoodieAccount(hoodie) {
     return function(response) {
       var newUsername;
       var newHoodieId;
+      var newAuthToken;
 
       newUsername = response.name.replace(/^user(_anonymous)?\//, '');
       newHoodieId = response.roles[0];
+      newAuthToken = response.authToken;
 
       //
       // if an error occurred, the userDB worker stores it to the $error attribute
@@ -982,7 +995,7 @@ function hoodieAccount(hoodie) {
       authenticated = true;
 
       account.fetch();
-      return resolveWith(newUsername, newHoodieId, options);
+      return resolveWith(newUsername, newHoodieId, newAuthToken, options);
     };
   }
 
@@ -1884,6 +1897,11 @@ function hoodieRequest(hoodie) {
 
     defaults.url = url;
 
+    if (hoodie.account.authToken) {
+      defaults.headers = {
+        Authorization: 'Bearer ' + hoodie.account.authToken
+      };
+    }
 
     // we are piping the result of the request to return a nicer
     // error if the request cannot reach the server at all.

@@ -45,6 +45,12 @@ describe('hoodie.request', function () {
       expect(this.args.crossDomain).to.be(true);
     });
 
+    it('should set the Authorization "Bearer ..." header', function() {
+      expect(this.args.headers).to.be({
+        Authorization: 'Bearer dXNlci2Mjow9N2Rh2WyZfioB1ubE'
+      });
+    });
+
     _and('baseUrl is not set', function() {
       beforeEach(function() {
         this.hoodie.baseUrl = undefined;
@@ -64,22 +70,6 @@ describe('hoodie.request', function () {
       });
     });
 
-    _and('hoodie.accounts.authToken is set', function() {
-      beforeEach(function() {
-        //FIXME: how do global.hoodie and this.hoodie relate?
-        global.hoodie = {
-          account: {
-            authToken: 'some-token'
-          }
-        };
-      });
-
-      it('should set the Authorization "Bearer ..." header', function() {
-        expect(this.args.headers).to.be({
-          Authorization: 'Bearer some-token'
-        });
-      });
-    });
   });
 
   _when('request \'POST\', \'/test\', data: funky: \'fresh\'', function() {
