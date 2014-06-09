@@ -63,6 +63,20 @@ describe('hoodie.request', function () {
         expect(this.args.crossDomain).to.be(undefined);
       });
     });
+
+    _and('hoodie.accounts.authToken is set', function() {
+      beforeEach(function() {
+        this.hoodie.accounts = {
+          authToken: 'some-token'
+        };
+      });
+
+      it('should set the Authorization "Bearer ..." header', function() {
+        expect(this.args.headers).to.be({
+          Authorization: 'Bearer some-token'
+        });
+      });
+    });
   });
 
   _when('request \'POST\', \'/test\', data: funky: \'fresh\'', function() {
