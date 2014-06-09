@@ -526,6 +526,7 @@ describe('hoodie.account', function() {
               this.hoodie.store.findAll.defer.resolve([]);
               this.requestDefers[1].resolve({
                 name: 'joe@example.com',
+                'authToken': 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
                 roles: ['hash123', 'confirmed']
               });
             });
@@ -539,7 +540,7 @@ describe('hoodie.account', function() {
             });
 
             it('should resolve its promise', function() {
-              expect(this.promise).to.be.resolvedWith('joe@example.com', 'hash123', {});
+              expect(this.promise).to.be.resolvedWith('joe@example.com', 'hash123', 'dXNlci2Mjow9N2Rh2WyZfioB1ubE', {});
             });
 
           }); // signIn successful
@@ -894,6 +895,7 @@ describe('hoodie.account', function() {
           this.response = {
             'ok': true,
             'name': 'user/joe@example.com',
+            'authToken': 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
             'roles': ['hash123', 'confirmed']
           };
           this.hoodie.request.defer.resolve(this.response);
@@ -920,9 +922,9 @@ describe('hoodie.account', function() {
           expect(this.account.fetch).to.be.called();
         });
 
-        it('should resolve with username, hoodieId and options', function() {
+        it('should resolve with username, hoodieId, authToken and options', function() {
           var promise = this.account.signIn('joe@example.com', 'secret', {foo: 'bar'});
-          expect(promise).to.be.resolvedWith('joe@example.com', 'hash123', {foo: 'bar'});
+          expect(promise).to.be.resolvedWith('joe@example.com', 'hash123', 'dXNlci2Mjow9N2Rh2WyZfioB1ubE', {foo: 'bar'});
         });
 
         it('should trigger `signin` event', function() {

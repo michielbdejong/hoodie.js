@@ -66,8 +66,11 @@ describe('hoodie.request', function () {
 
     _and('hoodie.accounts.authToken is set', function() {
       beforeEach(function() {
-        this.hoodie.accounts = {
-          authToken: 'some-token'
+        //FIXME: how do global.hoodie and this.hoodie relate?
+        global.hoodie = {
+          account: {
+            authToken: 'some-token'
+          }
         };
       });
 
