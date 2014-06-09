@@ -137,9 +137,18 @@ describe('hoodie.account', function() {
               expect(this.account.username).to.eql('joe@example.com');
             });
 
+            it('should set account.authToken', function() {
+              expect(this.account.authToken).to.eql('dXNlci2Mjow9N2Rh2WyZfioB1ubE');
+            });
+
             it('should not set _account.username config', function() {
               // because it's already 'joe@example.com'
               expect(configMock.set).to.not.be.calledWith('_account.username', 'joe@example.com');
+            });
+
+            it('should not set _account.authToken config', function() {
+              // because it's already 'dXNlci2Mjow9N2Rh2WyZfioB1ubE'
+              expect(configMock.set).to.not.be.calledWith('_account.authToken', 'dXNlci2Mjow9N2Rh2WyZfioB1ubE');
             });
           }); // returns valid session info for joe@example.com
 
@@ -535,6 +544,10 @@ describe('hoodie.account', function() {
               expect(configMock.set).to.be.calledWith('_account.username', 'joe@example.com');
               expect(this.account.username).to.be('joe@example.com');
             });
+            it('should persist new authToken', function() {
+              expect(configMock.set).to.be.calledWith('_account.authToken', 'dXNlci2Mjow9N2Rh2WyZfioB1ubE');
+              expect(this.account.authToken).to.be('dXNlci2Mjow9N2Rh2WyZfioB1ubE');
+            });
             it('should trigger `signup` event', function() {
               expect(this.account.trigger).to.be.calledWith('signup', 'joe@example.com');
             });
@@ -910,6 +923,13 @@ describe('hoodie.account', function() {
         });
 
         it('should set username', function() {
+          this.account.signIn('joe@example.com', 'secret');
+
+          expect(this.account.username).to.eql('joe@example.com');
+          expect(configMock.set).to.be.calledWith('_account.username', 'joe@example.com');
+        });
+
+        it('should set authToken', function() {
           this.account.signIn('joe@example.com', 'secret');
 
           expect(this.account.username).to.eql('joe@example.com');
