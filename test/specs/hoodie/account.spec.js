@@ -51,6 +51,7 @@ describe('hoodie.account', function() {
     _when('user is logged in as joe@example.com', function() {
       beforeEach(function() {
         this.account.username = 'joe@example.com';
+        this.account.authToken = 'dXNlci2Mjow9N2Rh2WyZfioB1ubE';
       });
 
       _and('session has not been validated yet', function() {
@@ -89,6 +90,7 @@ describe('hoodie.account', function() {
             var promise = this.account.authenticate();
             this.requestDefers[0].resolve({
               name: 'joe@example.com',
+              authToken: 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
               roles: ['hash123', 'confirmed']
             });
 
@@ -535,7 +537,7 @@ describe('hoodie.account', function() {
               this.hoodie.store.findAll.defer.resolve([]);
               this.requestDefers[1].resolve({
                 name: 'joe@example.com',
-                'authToken': 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
+                authToken: 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
                 roles: ['hash123', 'confirmed']
               });
             });
@@ -650,6 +652,7 @@ describe('hoodie.account', function() {
         beforeEach(function() {
           this.requestDefers[0].resolve({
             name: 'hash123',
+            authToken: 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
             roles: ['hash123', 'confirmed']
           });
         });
@@ -1070,6 +1073,7 @@ describe('hoodie.account', function() {
           this.response = {
             'ok': true,
             'name': 'user/joe@example.com',
+            'authToken': 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
             'roles': ['hash123', 'confirmed']
           };
           this.hoodie.request.defer.resolve(this.response);
@@ -1100,6 +1104,7 @@ describe('hoodie.account', function() {
         this.response = {
           'ok': true,
           'name': 'user/joe@example.com',
+          'authToken': 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
           'roles': ['hash123', 'confirmed']
         };
         this.hoodie.request.defer.resolve(this.response);
@@ -2081,6 +2086,7 @@ function validSessionResponse() {
 function validSignInResponse() {
   return {
     name: 'user/joe@example.com',
+    authToken: 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
     roles: ['hash123', 'confirmed']
   };
 }
@@ -2133,6 +2139,7 @@ function with_session_validated_before(callback) {
       var response = {
         userCtx: {
           name: 'user/joe@example.com',
+          authToken: 'dXNlci2Mjow9N2Rh2WyZfioB1ubE',
           roles: ['hash123', 'confirmed']
         }
       };

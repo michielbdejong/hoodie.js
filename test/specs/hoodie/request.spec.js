@@ -46,9 +46,7 @@ describe('hoodie.request', function () {
     });
 
     it('should set the Authorization "Bearer ..." header', function() {
-      expect(this.args.headers).to.be({
-        Authorization: 'Bearer dXNlci2Mjow9N2Rh2WyZfioB1ubE'
-      });
+      expect(this.args.headers.Authorization).to.be('Bearer dXNlci2Mjow9N2Rh2WyZfioB1ubE');
     });
 
     _and('baseUrl is not set', function() {
