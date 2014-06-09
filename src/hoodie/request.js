@@ -65,7 +65,7 @@ function hoodieRequest(hoodie) {
 
     if (hoodie.account.authToken) {
       defaults.headers = {
-        Authorization: 'Bearer ' + hoodie.account.authToken;
+        Authorization: 'Bearer ' + hoodie.account.authToken
       };
     }
 
